@@ -1,4 +1,4 @@
-# PyTorch mplementation of the paper "Generating images with sparse representations"
+# PyTorch implementation of the paper "Generating images with sparse representations"
 
 ## Get started
 ```
