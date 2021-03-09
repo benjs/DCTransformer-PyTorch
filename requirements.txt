@@ -1,0 +1,7 @@
+# --find-links https://download.pytorch.org/whl/torch_stable.html
+--find-links https://download.pytorch.org/whl/cu111/torch_stable.html
+
+pillow-simd
+requests
+torch>=1.8
+torchvision>=0.9
