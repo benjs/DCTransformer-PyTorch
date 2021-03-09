@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision.transforms import ColorJitter
 
 class RGBToYCbCr(nn.Module):
     """Converts a tensor from RGB to YCbCr color space.
@@ -22,4 +21,4 @@ class RGBToYCbCr(nn.Module):
         self.register_buffer('transform_bias', transform_bias, persistent=False)
 
     def forward(self, x:torch.Tensor):
-        return F.conv2d(x, self.transform, self.bias)
+        return F.conv2d(x, self.transform, self.transform_bias)
