@@ -59,6 +59,6 @@ class BlockDCT(nn.Module):
     def forward(self, x:torch.Tensor):
         B, C, H, W = x.size()
         assert H % self.N == 0 or W % self.N == 0, "Images size must be multiple of N (TBD)"
-        
+
         # TODO: normalizing scale factor for orthonormality
-        return F.conv2d(x.view(-1, 1, H, W), weight=self.weight, stride=self.N).view(B, C*self.N*self.N, 1, 1)
+        return F.conv2d(x.view(-1, 1, H, W), weight=self.weight, stride=self.N).view(B, C*self.N*self.N, H//self.N, W//self.N)
