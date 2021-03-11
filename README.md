@@ -5,5 +5,6 @@
 
 ```
 git clone https://github.com/benjs/DCTransformer-PyTorch.git
+cd DCTransformer-PyTorch
 pip install -r requirements.txt
 ```
