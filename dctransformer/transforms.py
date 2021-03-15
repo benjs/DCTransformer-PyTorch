@@ -35,8 +35,31 @@ class RGBToYCbCr(nn.Module):
     def forward(self, x:torch.Tensor):
         return F.conv2d(x, self.transform, self.transform_bias)
 
-class BlockDCT(nn.Module):
-    def __init__(self, N=8):
+def zigzag(n:int) -> torch.Tensor:
+    """Generates a zigzag position encoding tensor. 
+    Source: https://stackoverflow.com/questions/15201395/zig-zag-scan-an-n-x-n-array
+    """
+
+    pattern = torch.zeros(n, n)
+    triangle = lambda x: (x*(x+1))/2
+
+    # even index sums
+    for y in range(0, n):
+        for x in range(y%2, n-y, 2):
+            pattern[y, x] = triangle(x + y + 1) - x - 1
+
+    # odd index sums
+    for y in range(0, n):
+        for x in range((y+1)%2, n-y, 2):
+            pattern[y, x] = triangle(x + y + 1) - y - 1
+
+    # bottom right triangle
+    for y in range(n-1, -1, -1):
+        for x in range(n-1, -1+(n-y), -1):
+            pattern[y, x] = n*n-1 - pattern[n-y-1, n-x-1]
+
+    return pattern.t().contiguous()
+
         super().__init__()
 
         self.N = N        
