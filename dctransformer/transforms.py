@@ -2,6 +2,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+rgb_to_ycbcr = torch.tensor([
+    [ 0.299000,  0.587000,  0.114000],
+    [-0.168736, -0.331264,  0.500000],
+    [ 0.500000, -0.418688, -0.081312]
+])
+
+rgb_to_ycbcr_bias = torch.tensor([0, 0.5, 0.5])
+
 class RGBToYCbCr(nn.Module):
     """Converts a tensor from RGB to YCbCr color space.
     Using transform from https://github.com/libjpeg-turbo/libjpeg-turbo/blob/master/jccolor.c
@@ -9,10 +17,13 @@ class RGBToYCbCr(nn.Module):
     def __init__(self):
         super().__init__()
         
-        transform = torch.tensor([
-            [ 0.299000,  0.587000,  0.114000],
-            [-0.168736, -0.331264,  0.500000],
-            [ 0.500000, -0.418688, -0.081312]
+        self.register_buffer('transform', rgb_to_ycbcr[:, :, None, None], persistent=False)
+        self.register_buffer('transform_bias', rgb_to_ycbcr_bias, persistent=False)
+
+    @torch.no_grad()
+    def forward(self, x:torch.Tensor):
+        return F.conv2d(x, self.transform, self.transform_bias)
+
         ])
 
         transform_bias = torch.tensor([0, 0.5, 0.5])
